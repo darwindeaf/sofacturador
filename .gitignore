@@ -28,3 +28,4 @@ docker-compose.yml
 composer.lock
 /ssh
 /.project
+readme_test.md
