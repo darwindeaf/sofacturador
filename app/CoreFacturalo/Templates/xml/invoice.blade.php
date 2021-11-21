@@ -153,6 +153,10 @@
             @endif
         </cac:Party>
     </cac:AccountingCustomerParty>
+    <cac:PaymentTerms>
+        <cbc:ID>FormaPago</cbc:ID>
+        <cbc:PaymentMeansID>Contado</cbc:PaymentMeansID>
+    </cac:PaymentTerms>
     @if($document->detraction)
         @php($detraction = $document->detraction)
         <cac:PaymentMeans>
@@ -345,7 +349,7 @@
             </cac:TaxCategory>
         </cac:TaxSubtotal>
         @endif
-        @if($document->total_plastic_bag_taxes > 0) 
+        @if($document->total_plastic_bag_taxes > 0)
         <cac:TaxSubtotal>
             <cbc:TaxAmount currencyID="{{ $document->currency_type_id }}">{{ $document->total_plastic_bag_taxes }}</cbc:TaxAmount>
             <cac:TaxCategory>
