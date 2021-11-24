@@ -87,7 +87,8 @@ class ClientController extends Controller
 
             }
         }
-        return new ClientCollection($records);
+        //return new ClientCollection($records);
+        return response()->json($records);
     }
 
     public function record($id)
