@@ -54,7 +54,6 @@ class ClientController extends Controller
 
     public function records()
     {
-
         $records = Client::latest()->get();
         foreach ($records as &$row) {
             $tenancy = app(Environment::class);
@@ -87,8 +86,7 @@ class ClientController extends Controller
 
             }
         }
-        //return new ClientCollection($records);
-        return response()->json($records);
+        return new ClientCollection($records);
     }
 
     public function record($id)
