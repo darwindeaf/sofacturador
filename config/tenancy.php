@@ -246,7 +246,7 @@ return [
          *
          * @info set to false to disable.
          */
-        'auto-create-tenant-database-user' => true,
+        'auto-create-tenant-database-user' => false,
 
         /**
          * Automatically rename the tenant database when the random id of the
