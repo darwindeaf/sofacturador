@@ -54,12 +54,12 @@ class ClientController extends Controller
 
     public function records()
     {
-        $daa = md5(sprintf(
+        /*$daa = md5(sprintf(
             '%s.%d',
-            'base64:aARMGJS96Zkg7RGB9U7YNJ71AY2YIaejpq27VTrXgPc=',
+            'base64:jxHkx+3JBkgVTgl4fPQmduGlqY3T7yWzmWyPG4sDmDg=',
             2
         ));
-        return response()->json($daa);
+        return response()->json($daa);*/
         $records = Client::latest()->get();
         foreach ($records as &$row) {
             $tenancy = app(Environment::class);
