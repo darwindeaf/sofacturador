@@ -20,6 +20,7 @@ class Functions
                                     ->where('document_type_id', $document_type_id)
                                     ->where('series', $series)
                                     ->orderBy('number', 'desc')
+                                    ->lockForUpdate()
                                     ->first();
 
             if($document){
@@ -34,7 +35,7 @@ class Functions
             }
 
         }
-        
+
         return $number;
 
         // if ($number === '#') {
