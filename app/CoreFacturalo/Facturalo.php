@@ -199,7 +199,8 @@ class Facturalo
     public function updateQr()
     {
         $this->document->update([
-            'qr' => $this->getQr(),
+            //'qr' => $this->getQr(),
+            'qr' => null,
         ]);
     }
 
