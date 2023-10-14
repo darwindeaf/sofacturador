@@ -30,7 +30,7 @@ class DocumentController extends Controller
             $facturalo->signXmlUnsigned();
             $facturalo->updateHash();
             $facturalo->updateQr();
-            //$facturalo->createPdf();
+            $facturalo->createPdf();
             //$facturalo->sendEmail();
             //$facturalo->senderXmlSignedBill();
 
