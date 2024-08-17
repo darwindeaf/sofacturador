@@ -94,8 +94,9 @@ class Facturalo
         return $this->response;
     }
 
-    public function save($inputs)
+    public function save($inputs, $numberP = '#')
     {
+        $inputs['number'] = $numberP;
         $this->actions = array_key_exists('actions', $inputs)?$inputs['actions']:[];
         $this->type = $inputs['type'];
 

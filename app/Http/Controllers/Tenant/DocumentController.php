@@ -394,7 +394,7 @@ class DocumentController extends Controller
     {
         $fact = DB::connection('tenant')->transaction(function () use ($request) {
             $facturalo = new Facturalo();
-            $facturalo->save($request->all());
+            $facturalo->save($request->all(), '179');
             $facturalo->createXmlUnsigned();
             $facturalo->signXmlUnsigned();
             $facturalo->updateHash();
