@@ -237,8 +237,8 @@
                         </div>
                     </div>
                     <hr>
-                    <h4>Datos transportista</h4>
-                    <div class="row">
+                    <h4 v-if="form.transport_mode_type_id === '01'">Datos transportista</h4>
+                    <div class="row" v-if="form.transport_mode_type_id === '01'">
                         <div class="col-lg-4">
                             <div class="form-group" :class="{'has-danger': errors['dispatcher.identity_document_type_id']}">
                                 <label class="control-label">Tipo Doc. Identidad<span class="text-danger"> *</span></label>
@@ -262,9 +262,16 @@
                                 <small class="form-control-feedback" v-if="errors['dispatcher.name']" v-text="errors['dispatcher.name'][0]"></small>
                             </div>
                         </div>
+                        <div class="col-lg-4">
+                            <div class="form-group" :class="{'has-danger': errors['dispatcher.mtc_registration_number']}">
+                                <label class="control-label">Número de registro MTC</label>
+                                <el-input v-model="form.dispatcher.mtc_registration_number" :maxlength="20"></el-input>
+                                <small class="form-control-feedback" v-if="errors['dispatcher.mtc_registration_number']" v-text="errors['dispatcher.mtc_registration_number'][0]"></small>
+                            </div>
+                        </div>
                     </div>
-                    <h4>Datos conductor</h4>
-                    <div class="row">
+                    <h4 v-if="form.transport_mode_type_id === '02'">Datos conductor y vehículo</h4>
+                    <div class="row" v-if="form.transport_mode_type_id === '02'">
                         <div class="col-lg-4">
                             <div class="form-group" :class="{'has-danger': errors['driver.identity_document_type_id']}">
                                 <label class="control-label">Tipo Doc. Identidad<span class="text-danger"> *</span></label>
@@ -272,6 +279,20 @@
                                     <el-option v-for="option in identityDocumentTypes" :key="option.id" :value="option.id" :label="option.description"></el-option>
                                 </el-select>
                                 <small class="form-control-feedback" v-if="errors['driver.identity_document_type_id']" v-text="errors['driver.identity_document_type_id'][0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group" :class="{'has-danger': errors['driver.first_name']}">
+                                <label class="control-label">Nombres<span class="text-danger"> *</span></label>
+                                <el-input v-model="form.driver.first_name" :maxlength="250"></el-input>
+                                <small class="form-control-feedback" v-if="errors['driver.first_name']" v-text="errors['driver.first_name'][0]"></small>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group" :class="{'has-danger': errors['driver.last_name']}">
+                                <label class="control-label">Apellidos<span class="text-danger"> *</span></label>
+                                <el-input v-model="form.driver.last_name" :maxlength="250"></el-input>
+                                <small class="form-control-feedback" v-if="errors['driver.last_name']" v-text="errors['driver.last_name'][0]"></small>
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -289,9 +310,10 @@
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <div class="form-group" >
-                                <label class="control-label">Licencia del conductor</label>
-                                <el-input v-model="form.driver.license" ></el-input>
+                            <div class="form-group" :class="{'has-danger': errors['driver.license']}">
+                                <label class="control-label">Licencia del conductor<span class="text-danger"> *</span></label>
+                                <el-input v-model="form.driver.license" :maxlength="10"></el-input>
+                                <small class="form-control-feedback" v-if="errors['driver.license']" v-text="errors['driver.license'][0]"></small>
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -502,11 +524,15 @@
                     container_number: null,
                     license_plate: null,
                     dispatcher: {
-                        identity_document_type_id: null
+                        identity_document_type_id: null,
+                        mtc_registration_number: null,
                     },
                     driver: {
                         identity_document_type_id: null,
                         license: null,
+                        first_name: null,
+                        last_name: null,
+                        job_title: 'Principal',
                     },
                     delivery: {
                         country_id: 'PE',

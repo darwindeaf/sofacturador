@@ -27,6 +27,8 @@ class CompanyResource extends JsonResource
             'soap_username' => $this->soap_username,
             'soap_password' => $this->soap_password,
             'soap_url' => $this->soap_url,
+            'gre_client_id' => $this->gre_client_id,
+            'gre_client_secret' => $this->gre_client_secret,
             'certificate' => $this->certificate,
             'certificate_due' => $this->certificate_due,
             'logo' => $this->logo,

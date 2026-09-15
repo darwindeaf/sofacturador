@@ -31,6 +31,7 @@ if ($hostname) {
             Route::post('voided', 'Tenant\Api\VoidedController@store');
             Route::post('retentions', 'Tenant\Api\RetentionController@store');
             Route::post('dispatches', 'Tenant\Api\DispatchController@store');
+            Route::get('dispatches/{external_id}/status', 'Tenant\Api\DispatchController@status');
             Route::post('documents/send', 'Tenant\Api\DocumentController@send');
             Route::post('summaries/status', 'Tenant\Api\SummaryController@status');
             Route::post('voided/status', 'Tenant\Api\VoidedController@status');

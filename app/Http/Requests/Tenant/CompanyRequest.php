@@ -39,6 +39,16 @@ class CompanyRequest extends FormRequest
                 'required_if:soap_type_id,"02"',
                 'required_if:soap_send_id,"02"'
             ],
+            'gre_client_id' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+            'gre_client_secret' => [
+                'nullable',
+                'string',
+                'max:500',
+            ],
         ];
     }
 }

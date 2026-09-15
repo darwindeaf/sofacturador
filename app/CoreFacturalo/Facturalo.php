@@ -10,6 +10,7 @@ use App\CoreFacturalo\WS\Client\WsClient;
 use App\CoreFacturalo\WS\Services\BillSender;
 use App\CoreFacturalo\WS\Services\ConsultCdrService;
 use App\CoreFacturalo\WS\Services\ExtService;
+use App\CoreFacturalo\WS\Services\GreSender;
 use App\CoreFacturalo\WS\Services\SummarySender;
 use App\CoreFacturalo\WS\Services\SunatEndpoints;
 use App\CoreFacturalo\WS\Signed\XmlSigned;
@@ -568,8 +569,137 @@ class Facturalo
             ];
             return;
         }
+        if ($this->type === 'dispatch') {
+            $this->onlySenderXmlSignedDispatch();
+            return;
+        }
+
         $this->onlySenderXmlSignedBill();
 
+    }
+
+    public function onlySenderXmlSignedDispatch()
+    {
+        $sender = new GreSender($this->company);
+        $sendResult = $sender->send($this->document->filename, $this->xmlSigned);
+
+        if (!$sendResult->isSuccess()) {
+            $error = $sendResult->getError();
+            $this->response = [
+                'sent' => false,
+                'code' => $error->getCode(),
+                'description' => $error->getMessage(),
+            ];
+            $this->document->update([
+                'gre_response' => $this->response,
+                'gre_checked_at' => now(),
+                'soap_shipping_response' => $this->response,
+            ]);
+            throw new Exception("Code: {$error->getCode()}; Description: {$error->getMessage()}");
+        }
+
+        $ticket = $sendResult->getTicket();
+        $this->document->update([
+            'gre_ticket' => $ticket,
+            'gre_status' => '98',
+            'gre_response' => $sendResult->getRawResponse(),
+            'gre_sent_at' => now(),
+            'gre_checked_at' => now(),
+        ]);
+
+        return $this->processGreStatus($sender->status($ticket));
+    }
+
+    public function statusDispatch($ticket = null)
+    {
+        $ticket = $ticket ?: $this->document->gre_ticket;
+        if (empty($ticket)) {
+            throw new Exception('La guía no tiene un ticket GRE para consultar.');
+        }
+
+        return $this->processGreStatus((new GreSender($this->company))->status($ticket));
+    }
+
+    private function processGreStatus($result)
+    {
+        if (!$result->isSuccess()) {
+            $error = $result->getError();
+            $this->response = [
+                'sent' => true,
+                'pending' => true,
+                'ticket' => $result->getTicket(),
+                'code' => $error->getCode(),
+                'description' => $error->getMessage(),
+            ];
+            $this->document->update([
+                'gre_response' => $this->response,
+                'gre_checked_at' => now(),
+                'soap_shipping_response' => $this->response,
+            ]);
+
+            return $this->response;
+        }
+
+        $status = $result->getStatusCode();
+        $this->document->update([
+            'gre_status' => $status,
+            'gre_response' => $result->getRawResponse(),
+            'gre_checked_at' => now(),
+        ]);
+
+        if ($status === '98') {
+            $this->response = [
+                'sent' => true,
+                'pending' => true,
+                'ticket' => $result->getTicket(),
+                'status' => '98',
+                'description' => 'La GRE está siendo procesada por SUNAT.',
+            ];
+            $this->updateState(self::SENT);
+
+            return $this->response;
+        }
+
+        $cdrResponse = $result->getCdrResponse();
+        if ($cdrResponse) {
+            $this->uploadFile($result->getCdrZip(), 'cdr');
+            $this->document->update(['has_cdr' => true]);
+            $this->response = [
+                'sent' => true,
+                'pending' => false,
+                'ticket' => $result->getTicket(),
+                'status' => $status,
+                'code' => $cdrResponse->getCode(),
+                'description' => $cdrResponse->getDescription(),
+                'notes' => $cdrResponse->getNotes(),
+            ];
+            $this->document->update(['soap_shipping_response' => $this->response]);
+            if ($status === '99') {
+                $this->updateState(self::REJECTED);
+            }
+            $this->validationCodeResponse($cdrResponse->getCode(), $cdrResponse->getDescription());
+
+            return $this->response;
+        }
+
+        $error = $result->getError();
+        $code = $error ? $error->getCode() : $status;
+        $message = $error ? $error->getMessage() : 'SUNAT rechazó la GRE sin generar CDR.';
+        $this->response = [
+            'sent' => true,
+            'pending' => false,
+            'ticket' => $result->getTicket(),
+            'status' => $status,
+            'code' => $code,
+            'description' => $message,
+        ];
+        $this->document->update(['soap_shipping_response' => $this->response]);
+
+        if ($status === '99') {
+            $this->updateState(self::REJECTED);
+        }
+
+        throw new Exception("Code: {$code}; Description: {$message}");
     }
 
     public function onlySenderXmlSignedBill()

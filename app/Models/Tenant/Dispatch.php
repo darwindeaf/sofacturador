@@ -62,11 +62,19 @@ class Dispatch extends ModelTenant
         'secondary_license_plates',
         'reference_sale_note_id',
         'soap_shipping_response',
+        'gre_ticket',
+        'gre_status',
+        'gre_response',
+        'gre_sent_at',
+        'gre_checked_at',
     ];
 
     protected $casts = [
         'date_of_issue' => 'date',
         'date_of_shipping' => 'date',
+        'gre_response' => 'array',
+        'gre_sent_at' => 'datetime',
+        'gre_checked_at' => 'datetime',
     ];
 
     public function getEstablishmentAttribute($value)

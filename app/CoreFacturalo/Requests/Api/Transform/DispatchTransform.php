@@ -77,6 +77,7 @@ class DispatchTransform
                 'identity_document_type_id' => $dispatcher['codigo_tipo_documento_identidad'],
                 'number' => $dispatcher['numero_documento'],
                 'name' => $dispatcher['apellidos_y_nombres_o_razon_social'],
+                'mtc_registration_number' => Functions::valueKeyInArray($dispatcher, 'numero_registro_mtc'),
             ];
         }
         return null;
@@ -90,7 +91,11 @@ class DispatchTransform
 
             return [
                 'identity_document_type_id' => $driver['codigo_tipo_documento_identidad'],
-                'number' => $driver['numero_documento']
+                'number' => $driver['numero_documento'],
+                'first_name' => Functions::valueKeyInArray($driver, 'nombres'),
+                'last_name' => Functions::valueKeyInArray($driver, 'apellidos'),
+                'license' => Functions::valueKeyInArray($driver, 'numero_licencia'),
+                'job_title' => Functions::valueKeyInArray($driver, 'tipo_conductor', 'Principal'),
             ];
         }
         return null;

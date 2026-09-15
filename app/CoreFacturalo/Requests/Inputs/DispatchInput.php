@@ -38,7 +38,7 @@ class DispatchInput
             'establishment' => $establishment,
             'soap_type_id' => $soap_type_id,
             'state_type_id' => '01',
-            'ubl_version' => '2.0',
+            'ubl_version' => '2.1',
             'filename' => $filename,
             'document_type_id' => $document_type_id,
             'series' => $series,
@@ -80,7 +80,7 @@ class DispatchInput
     {
         if(array_key_exists('origin', $inputs)) {
             $origin = $inputs['origin'];
-            $location_id = $origin['location_id'][2] == '0' ? $origin['location_id'] : $origin['location_id'][2];
+            $location_id = self::locationId($origin['location_id']);
             $address = $origin['address'];
 
             return [
@@ -95,7 +95,7 @@ class DispatchInput
     {
         if(array_key_exists('delivery', $inputs)) {
             $delivery = $inputs['delivery'];
-            $location_id = $delivery['location_id'][2] == '0' ? $delivery['location_id'] : $delivery['location_id'][2];
+            $location_id = self::locationId($delivery['location_id']);
             $address = $delivery['address'];
 
             return [
@@ -106,6 +106,15 @@ class DispatchInput
         return null;
     }
 
+    private static function locationId($location)
+    {
+        if (is_array($location)) {
+            return count($location) ? end($location) : null;
+        }
+
+        return $location;
+    }
+
     private static function dispatcher($inputs)
     {
         if(array_key_exists('dispatcher', $inputs)) {
@@ -113,11 +122,13 @@ class DispatchInput
             $identity_document_type_id = $dispatcher['identity_document_type_id'];
             $number = ( isset($dispatcher['number']) ) ? $dispatcher['number'] : null ; // $dispatcher['number'];
             $name = ( isset($dispatcher['name']) ) ? $dispatcher['name'] : null ; //$dispatcher['name'];
+            $mtc_registration_number = isset($dispatcher['mtc_registration_number']) ? $dispatcher['mtc_registration_number'] : null;
 
             return  [
                 'identity_document_type_id' => $identity_document_type_id,
                 'number' => $number,
                 'name' => $name,
+                'mtc_registration_number' => $mtc_registration_number,
             ];
         }
         return null;
@@ -130,11 +141,17 @@ class DispatchInput
             $identity_document_type_id = $driver['identity_document_type_id'];
             $number =  ( isset($driver['number']) ) ? $driver['number'] : null ; //$driver['number'];
             $license =  (isset($driver['license'])) ? $driver['license'] : null ;
+            $first_name = isset($driver['first_name']) ? $driver['first_name'] : null;
+            $last_name = isset($driver['last_name']) ? $driver['last_name'] : null;
+            $job_title = isset($driver['job_title']) ? $driver['job_title'] : 'Principal';
 
             return [
                 'identity_document_type_id' => $identity_document_type_id,
                 'number' => $number,
                 'license' => $license,
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'job_title' => $job_title,
             ];
         }
         return null;

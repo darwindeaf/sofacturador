@@ -35,4 +35,12 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'sunat_gre' => [
+        'security_url' => env('SUNAT_GRE_SECURITY_URL', 'https://api-seguridad.sunat.gob.pe/v1/clientessol'),
+        'cpe_url' => env('SUNAT_GRE_CPE_URL', 'https://api-cpe.sunat.gob.pe/v1/contribuyente/gem'),
+        'scope' => env('SUNAT_GRE_SCOPE', 'https://api-cpe.sunat.gob.pe'),
+        'timeout' => (int) env('SUNAT_GRE_TIMEOUT', 30),
+        'connect_timeout' => (int) env('SUNAT_GRE_CONNECT_TIMEOUT', 10),
+    ],
+
 ];

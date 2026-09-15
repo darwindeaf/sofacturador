@@ -187,6 +187,26 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12 mt-2">
+                                <h4 class="border-bottom">API SUNAT - Guías de Remisión Electrónica</h4>
+                                <div class="sub-title text-muted mb-2"><small>Credenciales generadas en SOL para GRE Emisión de Comprobantes /v1/contribuyente/gem.</small></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" :class="{'has-danger': errors.gre_client_id}">
+                                    <label class="control-label">Client ID</label>
+                                    <el-input v-model="form.gre_client_id"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.gre_client_id" v-text="errors.gre_client_id[0]"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" :class="{'has-danger': errors.gre_client_secret}">
+                                    <label class="control-label">Client Secret</label>
+                                    <el-input v-model="form.gre_client_secret" type="password"></el-input>
+                                    <small class="form-control-feedback" v-if="errors.gre_client_secret" v-text="errors.gre_client_secret[0]"></small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-actions text-right pt-2">
                         <el-button type="primary" native-type="submit" :loading="loading_submit">Guardar</el-button>
@@ -240,6 +260,8 @@
                     soap_username: null,
                     soap_password: null,
                     soap_url: null,
+                    gre_client_id: null,
+                    gre_client_secret: null,
                     certificate: null,
                     certificate_due: null,
                     logo: null,
